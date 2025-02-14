@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class LicencaController extends Controller
 {
@@ -131,5 +133,32 @@ class LicencaController extends Controller
         $modalidade->save();
 
         return response()->json(['success' => true, 'modalidade' => $modalidade]);
+    }
+
+    public function gerarExcelComLicencas(Request $request)
+    {
+        $licencas = $request->licencas;
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = array_keys($licencas[0]);
+        $sheet->fromArray([$headers], null, 'A1');
+
+        $rowIndex = 2;
+        foreach ($licencas as $licenca) {
+            $sheet->fromArray(array_values($licenca), null, "A{$rowIndex}");
+            $rowIndex++;
+        }
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'licencas') . '.xlsx';
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($tempFile);
+
+        $base64Excel = base64_encode(file_get_contents($tempFile));
+        unlink($tempFile);
+
+        return response()->json(['base64' => $base64Excel]);
+
     }
 }

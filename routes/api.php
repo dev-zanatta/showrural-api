@@ -18,3 +18,4 @@ Route::get('/licencas-organizadas', [LicencaController::class, 'licencasComMonit
 Route::get('/all-licencas-por-razao-social', [LicencaController::class, 'allLicencasPorRazaoSocial']);
 Route::get('/all-modalidades', [LicencaController::class, 'allModalidades']);
 Route::post('/nova-modalidade', [LicencaController::class, 'novaModalidade']);
+Route::post('/gerar-excel-com-licencas', [LicencaController::class, 'gerarExcelComLicencas']);
