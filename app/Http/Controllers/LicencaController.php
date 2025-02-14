@@ -43,7 +43,6 @@ class LicencaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::info($th);
         }
     }
 
@@ -59,14 +58,9 @@ class LicencaController extends Controller
     public function downloadPdf(Request $request)
     {
 
-        Log::info($request);
-
-        //send a post request
         $result = Http::post('http://localhost:3001/scrape', $request);
 
         $result = $result['data']['data'];
-
-        Log::info($result);
 
         if (!$result) {
             return response()->json([
@@ -161,4 +155,27 @@ class LicencaController extends Controller
         return response()->json(['base64' => $base64Excel]);
 
     }
+
+    public function searchRazaoSocial(Request $request)
+    {
+        $search = $request->input('search') ?? '';
+
+
+        $razaoSocial = Licenca::select('nome_razao_social', 'id')
+            ->when($search, function ($query, $search) {
+                return $query->whereRaw("unaccent(lower(nome_razao_social)) LIKE unaccent(lower(?))", ["%{$search}%"]);
+            })
+            ->distinct('nome_razao_social')
+            ->get();
+
+        return response()->json($razaoSocial);
+    }
+
+    public function notificacoes()
+    {
+        $html1 = view('notificacao', )->render();
+
+        return response()->json($html1);
+    }
+
 }

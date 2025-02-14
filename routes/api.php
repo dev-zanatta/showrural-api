@@ -19,3 +19,5 @@ Route::get('/all-licencas-por-razao-social', [LicencaController::class, 'allLice
 Route::get('/all-modalidades', [LicencaController::class, 'allModalidades']);
 Route::post('/nova-modalidade', [LicencaController::class, 'novaModalidade']);
 Route::post('/gerar-excel-com-licencas', [LicencaController::class, 'gerarExcelComLicencas']);
+Route::get('/search-razao-social', [LicencaController::class, 'searchRazaoSocial']);
+Route::get('/notificacoes', [LicencaController::class, 'notificacoes']);

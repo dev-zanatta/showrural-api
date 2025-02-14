@@ -19,7 +19,6 @@ class EventTicketTypeExclusiveListImport implements
     public function collection(Collection $rows): void
     {
         foreach ($rows as $row) {
-            Log::info('a');
             [$cidade, $uf] = explode('/', $row['municipio_uf']);
             Licenca::create(
                 // [
