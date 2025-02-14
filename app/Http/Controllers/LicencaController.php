@@ -6,8 +6,6 @@ use App\Imports\EventTicketTypeExclusiveListImport;
 use App\Models\Licenca;
 use App\Models\Modalidade;
 use App\Models\Monitoramento;
-use GuzzleHttp\Client;
-use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +47,7 @@ class LicencaController extends Controller
     public function licencasComMonitoramento()
     {
         $licencas = Monitoramento::with('monitoramentoLicencas')
-            ->select('monitoramentos.*', DB::raw('false as opened'), )
+            ->select('monitoramentos.*', DB::raw('false as opened'),)
             ->get();
 
         return response()->json($licencas);
@@ -69,10 +67,19 @@ class LicencaController extends Controller
             ], 500);
         }
 
-        $licenca = Licenca::where('n_protocolo', $result['numero_protocolo'])
+        $return =  Licenca::where('n_protocolo', $result['numero_protocolo'])
             ->update(['pdf' => $result['pdf'], 'condicionamento' => $result['condicionamento']]);
 
-        return $licenca;
+
+        $updatedLicenca = Licenca::where('n_protocolo', $result['numero_protocolo'])->first();
+
+        if ($return) {
+            return response()->json([
+                'success' => true,
+                'message' => 'PDF atualizado com sucesso',
+                'licenca' => $updatedLicenca,
+            ]);
+        }
     }
 
     protected function convertBase64ToFile(string $base64String, ?string $fileName = null): UploadedFile
@@ -153,7 +160,6 @@ class LicencaController extends Controller
         unlink($tempFile);
 
         return response()->json(['base64' => $base64Excel]);
-
     }
 
     public function searchRazaoSocial(Request $request)
@@ -173,9 +179,8 @@ class LicencaController extends Controller
 
     public function notificacoes()
     {
-        $html1 = view('notificacao', )->render();
+        $html1 = view('notificacao',)->render();
 
         return response()->json($html1);
     }
-
 }
