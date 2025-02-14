@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\EventTicketTypeExclusiveListImport;
 use App\Models\Licenca;
+use App\Models\Monitoramento;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,13 @@ class LicencaController extends Controller
   //
   public function index()
   {
-    $licencas = Licenca::all();
+    $licencas = Licenca::select(
+        'licencas.*',
+        DB::raw("CONCAT(licencas.anos_vencimento, ' anos e ', licencas.meses_vencimento, ' meses') as vence_em"),
+        DB::raw("CONCAT(licencas.cidade, ' / ', licencas.uf) as cidade_uf"),
+        )
+
+        ->get();
 
     return response()->json($licencas);
   }
@@ -33,6 +40,15 @@ class LicencaController extends Controller
       DB::rollBack();
       Log::info($th);
     }
+  }
+
+  public function licencasComMonitoramento()
+  {
+    $licencas = Monitoramento::with('monitoramentoLicencas')
+        ->select('monitoramentos.*', DB::raw('false as opened'))
+        ->get();
+
+    return response()->json($licencas);
   }
 
   protected function convertBase64ToFile(string $base64String, ?string $fileName = null): UploadedFile

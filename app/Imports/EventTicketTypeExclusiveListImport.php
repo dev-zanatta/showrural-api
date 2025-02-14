@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class EventTicketTypeExclusiveListImport implements
     ToCollection,
@@ -18,11 +19,12 @@ class EventTicketTypeExclusiveListImport implements
     public function collection(Collection $rows): void
     {
         foreach($rows as $row) {
+            Log::info('a');
             [$cidade, $uf] = explode('/', $row['municipio_uf']);
-            Licenca::firstOrCreate(
-                [
-                    'n_protocolo' => $row['no_protocolo'],
-                ],
+            Licenca::create(
+                // [
+                //     'n_protocolo' => $row['no_protocolo'],
+                // ],
                 [
                 'n_protocolo' => $row['no_protocolo'],
                 'cpf_cnpj' => $row['cpf_cnpj'],
