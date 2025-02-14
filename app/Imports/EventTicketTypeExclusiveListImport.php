@@ -18,7 +18,7 @@ class EventTicketTypeExclusiveListImport implements
 {
     public function collection(Collection $rows): void
     {
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             Log::info('a');
             [$cidade, $uf] = explode('/', $row['municipio_uf']);
             Licenca::create(
@@ -26,21 +26,22 @@ class EventTicketTypeExclusiveListImport implements
                 //     'n_protocolo' => $row['no_protocolo'],
                 // ],
                 [
-                'n_protocolo' => $row['no_protocolo'],
-                'cpf_cnpj' => $row['cpf_cnpj'],
-                'nome_razao_social' => $row['nome_razao_social'],
-                'atividade' => $row['atividade'],
-                'atividade_especifica' => $row['atividade_especifica'],
-                'cidade' => $cidade,
-                'uf' => $uf,
-                'modalidade' => $row['modalidade'],
-                'n_documento' => $row['no_documento'],
-                'data_emissao' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['dt_emissao'])),
-                'data_validade' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['dt_validade'])),
-                'dias_vencimento' => $row['dias_para_vencimento'],
-                'meses_vencimento' => $row['meses'],
-                'anos_vencimento' => $row['anos'],
-            ]);
+                    'n_protocolo' => $row['no_protocolo'],
+                    'cpf_cnpj' => $row['cpf_cnpj'],
+                    'nome_razao_social' => $row['nome_razao_social'],
+                    'atividade' => $row['atividade'],
+                    'atividade_especifica' => $row['atividade_especifica'],
+                    'cidade' => $cidade,
+                    'uf' => $uf,
+                    'modalidade' => $row['modalidade'],
+                    'n_documento' => $row['no_documento'],
+                    'data_emissao' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(str_replace("'", $row['dt_emissao'], ""))),
+                    'data_validade' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(str_replace("'", $row['dt_validade'], ""))),
+                    'dias_vencimento' => $row['dias_para_vencimento'],
+                    'meses_vencimento' => $row['meses'],
+                    'anos_vencimento' => $row['anos'],
+                ]
+            );
         }
     }
 }

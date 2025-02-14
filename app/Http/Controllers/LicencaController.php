@@ -6,9 +6,12 @@ use App\Imports\EventTicketTypeExclusiveListImport;
 use App\Models\Licenca;
 use App\Models\Modalidade;
 use App\Models\Monitoramento;
+use GuzzleHttp\Client;
+use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -53,11 +56,15 @@ class LicencaController extends Controller
 
     public function downloadPdf(Request $request)
     {
-        $licenca = Licenca::find($request->id);
 
-        $result = Request::create('http://localhost:3001/scrape', 'POST', [
-            'numero_protocolo' => $licenca->n_protocolo,
-        ]);
+        Log::info($request);
+
+        //send a post request
+        $result = Http::post('http://localhost:3001/scrape', $request);
+
+        $result = $result['data']['data'];
+
+        Log::info($result);
 
         if (!$result) {
             return response()->json([
