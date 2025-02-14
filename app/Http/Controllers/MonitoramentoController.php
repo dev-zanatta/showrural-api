@@ -6,7 +6,6 @@ use App\Models\Licenca;
 use App\Models\Monitoramento;
 use App\Models\MonitoramentoLicencas;
 use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class MonitoramentoController extends Controller
 {
