@@ -15,3 +15,6 @@ Route::post('/baixar-pdf', [LicencaController::class, 'downloadPdf']);
 Route::post('/novo-monitoramento', [MonitoramentoController::class, 'create']);
 
 Route::get('/licencas-organizadas', [LicencaController::class, 'licencasComMonitoramento']);
+Route::get('/all-licencas-por-razao-social', [LicencaController::class, 'allLicencasPorRazaoSocial']);
+Route::get('/all-modalidades', [LicencaController::class, 'allModalidades']);
+Route::post('/nova-modalidade', [LicencaController::class, 'novaModalidade']);

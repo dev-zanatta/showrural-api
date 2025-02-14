@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\EventTicketTypeExclusiveListImport;
 use App\Models\Licenca;
+use App\Models\Modalidade;
 use App\Models\Monitoramento;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -44,7 +45,7 @@ class LicencaController extends Controller
     public function licencasComMonitoramento()
     {
         $licencas = Monitoramento::with('monitoramentoLicencas')
-            ->select('monitoramentos.*', DB::raw('false as opened'))
+            ->select('monitoramentos.*', DB::raw('false as opened'), )
             ->get();
 
         return response()->json($licencas);
@@ -99,5 +100,29 @@ class LicencaController extends Controller
             null,
             true
         );
+    }
+
+    public function allLicencasPorRazaoSocial(Request $request)
+    {
+        $licencas = Licenca::where('nome_razao_social', $request->razaoSocial)->get();
+
+        return response()->json($licencas);
+    }
+
+    public function allModalidades()
+    {
+        $modalidades = Modalidade::all();
+
+        return response()->json($modalidades);
+    }
+
+    public function novaModalidade(Request $request)
+    {
+        $modalidade = new Modalidade();
+        $modalidade->sigla = $request->sigla;
+        $modalidade->descricao = $request->descricao;
+        $modalidade->save();
+
+        return response()->json(['success' => true, 'modalidade' => $modalidade]);
     }
 }

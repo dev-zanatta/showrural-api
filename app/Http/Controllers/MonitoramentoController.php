@@ -14,6 +14,8 @@ class MonitoramentoController extends Controller
     {
         $monitoramento = new Monitoramento();
         $monitoramento->razao_social = $request->razaoSocial;
+        $monitoramento->tipo = $request->selected;
+        $monitoramento->emails = $request->emails;
         $monitoramento->save();
 
         $allLicencas = Licenca::where('nome_razao_social', $request->razaoSocial)->get();
